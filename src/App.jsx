@@ -10,6 +10,7 @@ export default function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
+  const [favoriteIds, setFavoriteIds] = useState([])
 
   useEffect(() => {
     let isMounted = true
@@ -39,20 +40,32 @@ export default function App() {
     return characterName.includes(normalizedSearchTerm)
   })
 
+  const favoriteCharacters = characters.filter((character) => favoriteIds.includes(character.id))
+
+  const toggleFavorite = (character) => {
+    setFavoriteIds((currentFavorites) => {
+      if (currentFavorites.includes(character.id)) {
+        return currentFavorites.filter((id) => id !== character.id)
+      }
+
+      return [...currentFavorites, character.id]
+    })
+  }
+
   return (
-    <div style={{fontFamily: 'Inter, Arial, sans-serif', minHeight: '100vh', background: '#f3f4f6', color: '#0f172a'}}>
+    <div className="app-shell">
       <Header />
 
-      <div style={{padding: '18px 20px', maxWidth: 1200, margin: '0 auto'}}>
-        <Stats />
+      <div className="app-content">
+        <Stats totalCharacters={characters.length} favoriteCount={favoriteCharacters.length} blockedCount={0} />
 
-        <div style={{marginTop: 16}}>
+        <div className="search-bar">
           <input
             type="text"
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
             placeholder="Buscar personaje por nombre"
-            style={{width: '100%', maxWidth: 360, padding: '10px 12px', border: '1px solid #cbd5e1', borderRadius: 8}}
+            className="search-input"
           />
         </div>
 
@@ -62,12 +75,16 @@ export default function App() {
           <div style={{padding: 18, textAlign: 'center', color: '#b91c1c'}}>Error al cargar personajes: {error}</div>
         ) : null}
 
-        <div style={{display: 'flex', gap: 24, marginTop: 24, alignItems: 'flex-start'}}>
-          <div style={{flex: 1}}>
-            <CharacterList characters={filteredCharacters} />
+        <div className="layout-columns">
+          <div className="main-column">
+            <CharacterList
+              characters={filteredCharacters}
+              favoriteIds={favoriteIds}
+              onToggleFavorite={toggleFavorite}
+            />
           </div>
-          <div style={{width: 280, flexShrink: 0}}>
-            <Sidebar />
+          <div className="sidebar-column">
+            <Sidebar favorites={favoriteCharacters} onToggleFavorite={toggleFavorite} />
           </div>
         </div>
       </div>

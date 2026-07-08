@@ -9,12 +9,12 @@ function Stat({label, value}) {
   )
 }
 
-export default function Stats() {
+export default function Stats({ totalCharacters = 0, favoriteCount = 0, blockedCount = 0 }) {
   return (
     <div style={{display: 'flex', justifyContent: 'center', gap: 16, marginTop: 12, alignItems: 'stretch', animation: 'fadeUp 420ms ease both'}}>
-      <div className="stat-item"><Stat label="Totales" value="0" /></div>
-      <div className="stat-item"><Stat label="Favoritos" value="0" /></div>
-      <div className="stat-item"><Stat label="Bloqueados" value="0" /></div>
+      <div className="stat-item"><Stat label="Totales" value={totalCharacters} /></div>
+      <div className="stat-item"><Stat label="Favoritos" value={favoriteCount} /></div>
+      <div className="stat-item"><Stat label="Bloqueados" value={blockedCount} /></div>
     </div>
   )
 }
