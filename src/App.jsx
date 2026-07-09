@@ -3,15 +3,19 @@ import Header from './components/Header.jsx'
 import Stats from './components/Stats.jsx'
 import CharacterList from './components/CharacterList.jsx'
 import Sidebar from './components/Sidebar.jsx'
+import useLocalStorage from './hooks/useLocalStorage.js'
 import './App.css'
+
+const FAVORITES_STORAGE_KEY = 'rickandmorty-favorites'
+const BLOCKED_STORAGE_KEY = 'rickandmorty-blocked'
 
 export default function App() {
   const [characters, setCharacters] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
-  const [favoriteIds, setFavoriteIds] = useState([])
-  const [blockedIds, setBlockedIds] = useState([])
+  const [favoriteIds, setFavoriteIds] = useLocalStorage(FAVORITES_STORAGE_KEY, [])
+  const [blockedIds, setBlockedIds] = useLocalStorage(BLOCKED_STORAGE_KEY, [])
 
   useEffect(() => {
     let isMounted = true
@@ -34,6 +38,14 @@ export default function App() {
       isMounted = false
     }
   }, [])
+
+  useEffect(() => {
+    if (favoriteIds.length === 0 && blockedIds.length === 0) {
+      return
+    }
+
+    setFavoriteIds((currentFavorites) => currentFavorites.filter((id) => !blockedIds.includes(id)))
+  }, [blockedIds, setFavoriteIds, favoriteIds])
 
   const normalizedSearchTerm = searchTerm.trim().toLowerCase()
   const filteredCharacters = characters.filter((character) => {
