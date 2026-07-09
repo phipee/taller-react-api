@@ -11,6 +11,7 @@ export default function App() {
   const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [favoriteIds, setFavoriteIds] = useState([])
+  const [blockedIds, setBlockedIds] = useState([])
 
   useEffect(() => {
     let isMounted = true
@@ -38,8 +39,9 @@ export default function App() {
   const filteredCharacters = characters.filter((character) => {
     const characterName = character.name ? character.name.toLowerCase() : ''
     return characterName.includes(normalizedSearchTerm)
-  })
+  }).filter((character) => !blockedIds.includes(character.id))
 
+  const blockedCharacters = characters.filter((character) => blockedIds.includes(character.id))
   const favoriteCharacters = characters.filter((character) => favoriteIds.includes(character.id))
 
   const toggleFavorite = (character) => {
@@ -52,12 +54,30 @@ export default function App() {
     })
   }
 
+  const toggleBlocked = (character) => {
+    setBlockedIds((currentBlocked) => {
+      const isCurrentlyBlocked = currentBlocked.includes(character.id)
+
+      if (isCurrentlyBlocked) {
+        return currentBlocked.filter((id) => id !== character.id)
+      }
+
+      return [...currentBlocked, character.id]
+    })
+
+    setFavoriteIds((currentFavorites) => currentFavorites.filter((id) => id !== character.id))
+  }
+
   return (
     <div className="app-shell">
       <Header />
 
       <div className="app-content">
-        <Stats totalCharacters={characters.length} favoriteCount={favoriteCharacters.length} blockedCount={0} />
+        <Stats
+          totalCharacters={characters.length}
+          favoriteCount={favoriteCharacters.length}
+          blockedCount={blockedCharacters.length}
+        />
 
         <div className="search-bar">
           <input
@@ -81,10 +101,16 @@ export default function App() {
               characters={filteredCharacters}
               favoriteIds={favoriteIds}
               onToggleFavorite={toggleFavorite}
+              onToggleBlocked={toggleBlocked}
             />
           </div>
           <div className="sidebar-column">
-            <Sidebar favorites={favoriteCharacters} onToggleFavorite={toggleFavorite} />
+            <Sidebar
+              favorites={favoriteCharacters}
+              blockedCharacters={blockedCharacters}
+              onToggleFavorite={toggleFavorite}
+              onToggleBlocked={toggleBlocked}
+            />
           </div>
         </div>
       </div>

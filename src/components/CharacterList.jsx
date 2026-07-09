@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function CharacterList({ characters = [], favoriteIds = [], onToggleFavorite }) {
+export default function CharacterList({ characters = [], favoriteIds = [], onToggleFavorite, onToggleBlocked }) {
   return (
     <section className="character-list-anim panel-card">
       <h2 style={{margin: 0, fontSize: 20}}>Listado de Personajes</h2>
@@ -16,9 +16,14 @@ export default function CharacterList({ characters = [], favoriteIds = [], onTog
               </div>
               <div className="character-card-body">
                 <div className="character-name">{item.name}</div>
-                <button type="button" className="favorite-button" onClick={() => onToggleFavorite?.(item)}>
-                  {favoriteIds.includes(item.id) ? 'Quitar de favoritos' : 'Marcar favorito'}
-                </button>
+                <div className="character-actions">
+                  <button type="button" className="favorite-button" onClick={() => onToggleFavorite?.(item)}>
+                    {favoriteIds.includes(item.id) ? 'Quitar de favoritos' : 'Marcar favorito'}
+                  </button>
+                  <button type="button" className="block-button" onClick={() => onToggleBlocked?.(item)}>
+                    Bloquear
+                  </button>
+                </div>
               </div>
             </article>
           ))}

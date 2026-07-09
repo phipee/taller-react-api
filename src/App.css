@@ -317,6 +317,11 @@
   gap: 10px;
 }
 
+.character-actions {
+  display: grid;
+  gap: 8px;
+}
+
 .character-name {
   font-weight: 700;
   font-size: 14px;
@@ -344,9 +349,29 @@
   transform: translateY(-1px);
 }
 
+.block-button {
+  width: 100%;
+  padding: 9px 10px;
+  border-radius: 10px;
+  color: #7c2d12;
+  background: rgba(251, 146, 60, 0.14);
+  transition: transform 180ms ease, background 180ms ease;
+}
+
+.block-button:hover {
+  background: rgba(251, 146, 60, 0.2);
+  transform: translateY(-1px);
+}
+
 .sidebar-panel {
   display: grid;
   gap: 14px;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background: rgba(226, 232, 240, 0.95);
+  margin: 4px 0;
 }
 
 .favorites-list {
